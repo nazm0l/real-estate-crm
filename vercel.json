@@ -1,0 +1,5 @@
+{
+  "crons": [
+    { "path": "/api/meta-ads/sync", "schedule": "0 * * * *" }
+  ]
+}

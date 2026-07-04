@@ -1,26 +1,344 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: hsl(180 35% 98%);
+  --foreground: hsl(215 25% 12%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(215 25% 12%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(215 25% 12%);
+
+  --primary: hsl(173 80% 28%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  --secondary: hsl(215 20% 93%);
+  --secondary-foreground: hsl(215 25% 20%);
+
+  --muted: hsl(215 15% 94%);
+  --muted-foreground: hsl(215 15% 45%);
+
+  --accent: hsl(173 60% 94%);
+  --accent-foreground: hsl(173 80% 20%);
+
+  --destructive: hsl(0 72% 51%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  --border: hsl(215 15% 88%);
+  --input: hsl(215 15% 88%);
+  --ring: hsl(173 80% 28%);
+
+  --radius: 0.5rem;
+
+  --success: hsl(142 72% 29%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(38 92% 40%);
+  --warning-foreground: hsl(0 0% 100%);
+  --info: hsl(221 83% 44%);
+  --info-foreground: hsl(0 0% 100%);
+
+  --chart-1: hsl(173 80% 28%);
+  --chart-2: hsl(221 83% 44%);
+  --chart-3: hsl(38 92% 40%);
+  --chart-4: hsl(280 60% 55%);
+  --chart-5: hsl(0 72% 51%);
+
+  --pattern-dot: hsl(173 80% 28% / 0.10);
+  --pattern-glow: hsl(173 80% 28% / 0.05);
+  --sidebar: hsl(173 80% 28%);
+  --sidebar-foreground: hsl(0 0% 94%);
+  --sidebar-primary: hsl(0 0% 100%);
+  --sidebar-primary-foreground: hsl(173 80% 28%);
+  --sidebar-accent: hsl(173 80% 21%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+  --sidebar-border: hsl(173 80% 23%);
+  --sidebar-ring: hsl(0 0% 100%);
+}
+
+.dark {
+  --background: hsl(186 28% 8%);
+  --foreground: hsl(210 20% 92%);
+  --card: hsl(215 28% 11%);
+  --card-foreground: hsl(210 20% 92%);
+  --popover: hsl(215 28% 11%);
+  --popover-foreground: hsl(210 20% 92%);
+  --primary: hsl(173 70% 40%);
+  --primary-foreground: hsl(215 30% 8%);
+  --secondary: hsl(215 25% 16%);
+  --secondary-foreground: hsl(210 20% 80%);
+  --muted: hsl(215 25% 16%);
+  --muted-foreground: hsl(215 15% 55%);
+  --accent: hsl(173 40% 16%);
+  --accent-foreground: hsl(173 70% 70%);
+  --destructive: hsl(0 63% 45%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(215 25% 18%);
+  --input: hsl(215 25% 18%);
+  --ring: hsl(173 70% 40%);
+
+  --success: hsl(142 60% 35%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(38 85% 45%);
+  --warning-foreground: hsl(0 0% 100%);
+  --info: hsl(221 75% 55%);
+  --info-foreground: hsl(0 0% 100%);
+
+  --chart-1: hsl(173 70% 40%);
+  --chart-2: hsl(221 75% 55%);
+  --chart-3: hsl(38 85% 45%);
+  --chart-4: hsl(280 55% 60%);
+  --chart-5: hsl(0 63% 45%);
+
+  --pattern-dot: hsl(173 70% 40% / 0.10);
+  --pattern-glow: hsl(173 70% 40% / 0.05);
+  --sidebar: hsl(173 80% 24%);
+  --sidebar-foreground: hsl(0 0% 94%);
+  --sidebar-primary: hsl(0 0% 100%);
+  --sidebar-primary-foreground: hsl(173 80% 24%);
+  --sidebar-accent: hsl(173 80% 17%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+  --sidebar-border: hsl(173 80% 19%);
+  --sidebar-ring: hsl(0 0% 100%);
+}
+
+/* ── Accent color presets ─────────────────────────────────────────────
+   Selected via data-theme on <html> (persisted in localStorage as
+   "theme-color"). Teal is the default and needs no attribute. Each preset
+   overrides only the brand-accent tokens; the slate neutrals stay fixed. */
+
+[data-theme="blue"] {
+  --pattern-dot: hsl(221 83% 45% / 0.10);
+  --pattern-glow: hsl(221 83% 45% / 0.05);
+  --background: hsl(221 50% 98%);
+  --primary: hsl(221 83% 45%);
+  --accent: hsl(221 70% 94%);
+  --accent-foreground: hsl(221 83% 25%);
+  --ring: hsl(221 83% 45%);
+  --chart-1: hsl(221 83% 45%);
+  --sidebar: hsl(221 83% 45%);
+  --sidebar-foreground: hsl(0 0% 96%);
+  --sidebar-accent: hsl(221 83% 37%);
+  --sidebar-border: hsl(221 83% 39%);
+  --sidebar-primary: hsl(0 0% 100%);
+  --sidebar-primary-foreground: hsl(221 83% 45%);
+  --sidebar-ring: hsl(0 0% 100%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+}
+html.dark[data-theme="blue"] {
+  --pattern-dot: hsl(217 91% 60% / 0.10);
+  --pattern-glow: hsl(217 91% 60% / 0.05);
+  --background: hsl(222 32% 8%);
+  --primary: hsl(217 91% 60%);
+  --primary-foreground: hsl(215 30% 8%);
+  --accent: hsl(221 45% 16%);
+  --accent-foreground: hsl(217 85% 75%);
+  --ring: hsl(217 91% 60%);
+  --chart-1: hsl(217 91% 60%);
+  --sidebar-primary: hsl(217 91% 60%);
+  --sidebar-ring: hsl(217 91% 60%);
+}
+
+[data-theme="violet"] {
+  --pattern-dot: hsl(262 80% 50% / 0.10);
+  --pattern-glow: hsl(262 80% 50% / 0.05);
+  --background: hsl(262 50% 98%);
+  --primary: hsl(262 80% 50%);
+  --accent: hsl(262 65% 95%);
+  --accent-foreground: hsl(262 80% 30%);
+  --ring: hsl(262 80% 50%);
+  --chart-1: hsl(262 80% 50%);
+  --sidebar: hsl(262 80% 50%);
+  --sidebar-foreground: hsl(0 0% 96%);
+  --sidebar-accent: hsl(262 80% 42%);
+  --sidebar-border: hsl(262 80% 44%);
+  --sidebar-primary: hsl(0 0% 100%);
+  --sidebar-primary-foreground: hsl(262 80% 50%);
+  --sidebar-ring: hsl(0 0% 100%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+}
+html.dark[data-theme="violet"] {
+  --pattern-dot: hsl(258 90% 66% / 0.10);
+  --pattern-glow: hsl(258 90% 66% / 0.05);
+  --background: hsl(262 26% 9%);
+  --primary: hsl(258 90% 66%);
+  --primary-foreground: hsl(215 30% 8%);
+  --accent: hsl(262 45% 18%);
+  --accent-foreground: hsl(258 85% 78%);
+  --ring: hsl(258 90% 66%);
+  --chart-1: hsl(258 90% 66%);
+  --sidebar-primary: hsl(258 90% 66%);
+  --sidebar-ring: hsl(258 90% 66%);
+}
+
+[data-theme="rose"] {
+  --pattern-dot: hsl(347 77% 47% / 0.10);
+  --pattern-glow: hsl(347 77% 47% / 0.05);
+  --background: hsl(347 50% 98%);
+  --primary: hsl(347 77% 47%);
+  --accent: hsl(347 70% 95%);
+  --accent-foreground: hsl(347 77% 28%);
+  --ring: hsl(347 77% 47%);
+  --chart-1: hsl(347 77% 47%);
+  --sidebar: hsl(347 77% 47%);
+  --sidebar-foreground: hsl(0 0% 96%);
+  --sidebar-accent: hsl(347 77% 39%);
+  --sidebar-border: hsl(347 77% 41%);
+  --sidebar-primary: hsl(0 0% 100%);
+  --sidebar-primary-foreground: hsl(347 77% 47%);
+  --sidebar-ring: hsl(0 0% 100%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+}
+html.dark[data-theme="rose"] {
+  --pattern-dot: hsl(350 89% 60% / 0.10);
+  --pattern-glow: hsl(350 89% 60% / 0.05);
+  --background: hsl(345 24% 9%);
+  --primary: hsl(350 89% 60%);
+  --primary-foreground: hsl(215 30% 8%);
+  --accent: hsl(347 45% 17%);
+  --accent-foreground: hsl(350 85% 76%);
+  --ring: hsl(350 89% 60%);
+  --chart-1: hsl(350 89% 60%);
+  --sidebar-primary: hsl(350 89% 60%);
+  --sidebar-ring: hsl(350 89% 60%);
+}
+
+[data-theme="orange"] {
+  --pattern-dot: hsl(25 95% 44% / 0.10);
+  --pattern-glow: hsl(25 95% 44% / 0.05);
+  --background: hsl(28 60% 98%);
+  --primary: hsl(25 95% 44%);
+  --accent: hsl(25 90% 94%);
+  --accent-foreground: hsl(25 95% 26%);
+  --ring: hsl(25 95% 44%);
+  --chart-1: hsl(25 95% 44%);
+  --sidebar: hsl(25 95% 44%);
+  --sidebar-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(25 95% 36%);
+  --sidebar-border: hsl(25 95% 38%);
+  --sidebar-primary: hsl(0 0% 100%);
+  --sidebar-primary-foreground: hsl(25 95% 44%);
+  --sidebar-ring: hsl(0 0% 100%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+}
+html.dark[data-theme="orange"] {
+  --pattern-dot: hsl(21 90% 58% / 0.10);
+  --pattern-glow: hsl(21 90% 58% / 0.05);
+  --background: hsl(24 26% 8%);
+  --primary: hsl(21 90% 58%);
+  --primary-foreground: hsl(215 30% 8%);
+  --accent: hsl(25 50% 16%);
+  --accent-foreground: hsl(28 88% 72%);
+  --ring: hsl(21 90% 58%);
+  --chart-1: hsl(21 90% 58%);
+  --sidebar-primary: hsl(21 90% 58%);
+  --sidebar-ring: hsl(21 90% 58%);
+}
+
+[data-theme="emerald"] {
+  --pattern-dot: hsl(152 69% 30% / 0.10);
+  --pattern-glow: hsl(152 69% 30% / 0.05);
+  --background: hsl(152 45% 98%);
+  --primary: hsl(152 69% 30%);
+  --accent: hsl(152 55% 93%);
+  --accent-foreground: hsl(152 69% 18%);
+  --ring: hsl(152 69% 30%);
+  --chart-1: hsl(152 69% 30%);
+  --sidebar: hsl(152 69% 30%);
+  --sidebar-foreground: hsl(0 0% 96%);
+  --sidebar-accent: hsl(152 69% 23%);
+  --sidebar-border: hsl(152 69% 25%);
+  --sidebar-primary: hsl(0 0% 100%);
+  --sidebar-primary-foreground: hsl(152 69% 30%);
+  --sidebar-ring: hsl(0 0% 100%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+}
+html.dark[data-theme="emerald"] {
+  --pattern-dot: hsl(158 64% 42% / 0.10);
+  --pattern-glow: hsl(158 64% 42% / 0.05);
+  --background: hsl(155 28% 8%);
+  --primary: hsl(158 64% 42%);
+  --primary-foreground: hsl(215 30% 8%);
+  --accent: hsl(152 45% 14%);
+  --accent-foreground: hsl(158 60% 72%);
+  --ring: hsl(158 64% 42%);
+  --chart-1: hsl(158 64% 42%);
+  --sidebar-primary: hsl(158 64% 42%);
+  --sidebar-ring: hsl(158 64% 42%);
+}
+
+/* Themed page surface: subtle top glow + dot grid in the accent color.
+   --pattern-dot / --pattern-glow are defined per theme with baked-in alpha
+   (the minifier mangles color-mix(), so no runtime color math here). */
+.page-pattern {
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -15%, var(--pattern-glow), transparent 70%) 0 0 / 100% 100% no-repeat,
+    radial-gradient(var(--pattern-dot) 1px, transparent 1.5px) 0 0 / 22px 22px repeat,
+    var(--background);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans), var(--font-bengali), "SolaimanLipi", system-ui, sans-serif;
+  }
+  html {
+    @apply font-sans;
+  }
 }

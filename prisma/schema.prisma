@@ -1,0 +1,316 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id              String           @id @default(cuid()) @map("_id")
+  companyName     String
+  logoUrl         String?
+  metaAccessToken String?
+  metaAdAccountId String?
+  createdAt       DateTime         @default(now())
+  users           User[]
+  leads           Lead[]
+  properties      Property[]
+  payments        Payment[]
+  siteVisits      SiteVisit[]
+  metaAdCampaigns MetaAdCampaign[]
+  roles           Role[]
+}
+
+// ── Dynamic RBAC ──
+
+model Role {
+  id          String           @id @default(cuid()) @map("_id")
+  tenantId    String
+  tenant      Tenant           @relation(fields: [tenantId], references: [id])
+  name        String
+  description String?
+  isDefault   Boolean          @default(false)
+  isSystem    Boolean          @default(false)
+  permissions RolePermission[]
+  users       User[]
+  createdAt   DateTime         @default(now())
+
+  @@unique([tenantId, name])
+}
+
+model RolePermission {
+  id         String @id @default(cuid()) @map("_id")
+  roleId     String
+  role       Role   @relation(fields: [roleId], references: [id])
+  permission String
+
+  @@unique([roleId, permission])
+}
+
+model User {
+  id            String         @id @default(cuid()) @map("_id")
+  tenantId      String
+  tenant        Tenant         @relation(fields: [tenantId], references: [id])
+  roleId        String
+  role          Role           @relation(fields: [roleId], references: [id])
+  name          String
+  email         String         @unique
+  emailVerified Boolean        @default(false)
+  image         String?
+  isPlatformAdmin Boolean      @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  assignedLeads Lead[]         @relation("AssignedAgent")
+  activities    LeadActivity[]
+  siteVisits    SiteVisit[]
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("User")
+}
+
+// ── Better Auth ──
+
+model Session {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("Session")
+}
+
+model Account {
+  id                    String    @id @default(cuid()) @map("_id")
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id])
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("Account")
+}
+
+model Verification {
+  id         String   @id @default(cuid()) @map("_id")
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("Verification")
+}
+
+// ── Leads ──
+
+model Lead {
+  id             String         @id @default(cuid()) @map("_id")
+  tenantId       String
+  tenant         Tenant         @relation(fields: [tenantId], references: [id])
+  agentId        String?
+  agent          User?          @relation("AssignedAgent", fields: [agentId], references: [id])
+  name           String
+  phone          String
+  email          String?
+  source         LeadSource     @default(MANUAL)
+  propertyType   PropertyType?
+  budgetMin      Float?
+  budgetMax      Float?
+  locationArea   String?
+  pipelineStage  PipelineStage  @default(NEW)
+  nextFollowUpAt DateTime?
+  aiScore        AiScore?
+  aiScoreReason  String?
+  aiScoredAt     DateTime?
+  metaAdId       String?
+  activities     LeadActivity[]
+  interestedIn   LeadProperty[]
+  payments       Payment[]
+  siteVisits     SiteVisit[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([tenantId, phone])
+  @@index([tenantId, nextFollowUpAt])
+}
+
+enum LeadSource {
+  MANUAL
+  WEBSITE
+  FACEBOOK
+  INSTAGRAM
+  REFERRAL
+}
+
+enum PropertyType {
+  APARTMENT
+  LAND
+  COMMERCIAL
+}
+
+enum PipelineStage {
+  NEW
+  CONTACTED
+  INTERESTED
+  SITE_VISIT
+  NEGOTIATION
+  BOOKED
+  LOST
+}
+
+enum AiScore {
+  HOT
+  WARM
+  COLD
+}
+
+model LeadActivity {
+  id          String   @id @default(cuid()) @map("_id")
+  leadId      String
+  lead        Lead     @relation(fields: [leadId], references: [id])
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  type        String
+  description String
+  createdAt   DateTime @default(now())
+}
+
+// ── Properties ──
+
+model Property {
+  id           String         @id @default(cuid()) @map("_id")
+  tenantId     String
+  tenant       Tenant         @relation(fields: [tenantId], references: [id])
+  title        String
+  type         PropertyType
+  price        Float
+  sizeSqft     Float?
+  floor        Int?
+  bedrooms     Int?
+  locationArea String
+  status       PropertyStatus @default(AVAILABLE)
+  projectName  String?
+  description  String?
+  photoUrls    String[]
+  leads        LeadProperty[]
+  payments     Payment[]
+  createdAt    DateTime       @default(now())
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  BOOKED
+  SOLD
+}
+
+// Composite PK not supported in MongoDB — synthetic id + unique constraint
+model LeadProperty {
+  id         String   @id @default(cuid()) @map("_id")
+  leadId     String
+  propertyId String
+  lead       Lead     @relation(fields: [leadId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  @@unique([leadId, propertyId])
+}
+
+// ── Payments ──
+
+model Payment {
+  id         String        @id @default(cuid()) @map("_id")
+  tenantId   String
+  tenant     Tenant        @relation(fields: [tenantId], references: [id])
+  leadId     String
+  lead       Lead          @relation(fields: [leadId], references: [id])
+  propertyId String?
+  property   Property?     @relation(fields: [propertyId], references: [id])
+  type       PaymentType
+  amount     Float
+  dueDate    DateTime
+  paidDate   DateTime?
+  status     PaymentStatus @default(PENDING)
+  method     String?
+  reference  String?
+  note       String?
+  createdAt  DateTime      @default(now())
+
+  @@index([tenantId, status, dueDate])
+}
+
+enum PaymentType {
+  BOOKING_MONEY
+  DOWN_PAYMENT
+  INSTALLMENT
+  FINAL_PAYMENT
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+}
+
+// ── Site visits ──
+
+model SiteVisit {
+  id          String          @id @default(cuid()) @map("_id")
+  tenantId    String
+  tenant      Tenant          @relation(fields: [tenantId], references: [id])
+  leadId      String
+  lead        Lead            @relation(fields: [leadId], references: [id])
+  agentId     String
+  agent       User            @relation(fields: [agentId], references: [id])
+  scheduledAt DateTime
+  location    String
+  status      SiteVisitStatus @default(SCHEDULED)
+  note        String?
+  createdAt   DateTime        @default(now())
+
+  @@index([tenantId, scheduledAt])
+}
+
+enum SiteVisitStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+// ── Meta Ads ──
+
+model MetaAdCampaign {
+  id            String   @id @default(cuid()) @map("_id")
+  tenantId      String
+  tenant        Tenant   @relation(fields: [tenantId], references: [id])
+  campaignId    String
+  name          String
+  spendBdt      Float    @default(0)
+  spendTodayBdt Float    @default(0)
+  impressions   Int      @default(0)
+  clicks        Int      @default(0)
+  leadsCount    Int      @default(0)
+  syncedAt      DateTime @default(now())
+
+  @@unique([tenantId, campaignId])
+}
