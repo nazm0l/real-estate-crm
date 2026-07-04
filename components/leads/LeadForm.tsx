@@ -30,6 +30,7 @@ export function LeadForm({
   open,
   onOpenChange,
   agents,
+  properties = [],
   canAssign,
   currentUserId,
   onSaved,
@@ -39,6 +40,7 @@ export function LeadForm({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   agents: { id: string; name: string }[];
+  properties?: { id: string; title: string; locationArea: string }[];
   canAssign: boolean;
   currentUserId: string;
   onSaved: (lead: LeadWithAgent) => void;
@@ -54,6 +56,7 @@ export function LeadForm({
   const [locationArea, setLocationArea] = useState<string | null>(null);
   const [nextFollowUpAt, setNextFollowUpAt] = useState<Date | undefined>(undefined);
   const [agentId, setAgentId] = useState<string | null>(null);
+  const [interestedPropertyId, setInterestedPropertyId] = useState<string | null>(null);
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [duplicate, setDuplicate] = useState<DuplicateInfo>(null);
   const [saving, setSaving] = useState(false);
@@ -70,6 +73,7 @@ export function LeadForm({
     setLocationArea(lead?.locationArea ?? null);
     setNextFollowUpAt(lead?.nextFollowUpAt ? new Date(lead.nextFollowUpAt) : undefined);
     setAgentId(lead?.agentId ?? (mode === "create" ? currentUserId : null));
+    setInterestedPropertyId(null);
     setPhoneError(null);
     setDuplicate(null);
   }, [open, lead, mode, currentUserId]);
@@ -123,6 +127,7 @@ export function LeadForm({
       locationArea: locationArea ?? undefined,
       nextFollowUpAt: nextFollowUpAt ? nextFollowUpAt.toISOString() : mode === "edit" ? null : undefined,
       ...(canAssign ? { agentId: agentId ?? undefined } : {}),
+      ...(mode === "create" ? { propertyId: interestedPropertyId ?? undefined } : {}),
     };
 
     const res = await fetch(mode === "create" ? "/api/leads" : `/api/leads/${lead!.id}`, {
@@ -160,12 +165,12 @@ export function LeadForm({
 
         <div className="grid grid-cols-1 gap-x-4 gap-y-5 px-4 pb-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="lead-name">Name</Label>
+            <Label htmlFor="lead-name" required>Name</Label>
             <Input id="lead-name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="lead-phone">Phone</Label>
+            <Label htmlFor="lead-phone" required>Phone</Label>
             <Input
               id="lead-phone"
               value={phone}
@@ -258,6 +263,24 @@ export function LeadForm({
           <div className="sm:col-span-2">
             <LocationPicker value={locationArea} onChange={setLocationArea} />
           </div>
+
+          {mode === "create" && properties.length > 0 && (
+            <div className="space-y-2 sm:col-span-2">
+              <Label>Interested property</Label>
+              <Select value={interestedPropertyId} onValueChange={setInterestedPropertyId}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="None selected" />
+                </SelectTrigger>
+                <SelectContent>
+                  {properties.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.title} — {p.locationArea}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label>Next follow-up</Label>

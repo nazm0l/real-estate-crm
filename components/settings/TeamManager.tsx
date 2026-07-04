@@ -162,11 +162,11 @@ export function TeamManager({
           </SheetHeader>
           <div className="grid grid-cols-1 gap-x-4 gap-y-5 px-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="member-name">Name</Label>
+              <Label htmlFor="member-name" required>Name</Label>
               <Input id="member-name" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="member-email">Email</Label>
+              <Label htmlFor="member-email" required>Email</Label>
               <Input
                 id="member-email"
                 type="email"

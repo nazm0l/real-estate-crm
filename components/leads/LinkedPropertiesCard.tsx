@@ -143,7 +143,7 @@ export function LinkedPropertiesCard({
             <DialogTitle>Link a property</DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
-            <Label>Property</Label>
+            <Label required>Property</Label>
             <Select value={selectedId} onValueChange={setSelectedId}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a property" />

@@ -2,6 +2,7 @@ import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { hasPermission, PERMISSIONS } from "@/lib/permissions";
 import { formatBDT } from "@/lib/format-bdt";
+import { formatUSD } from "@/lib/format-usd";
 import { startOfToday } from "@/lib/payment-status";
 import { addDays, formatDistanceToNow } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -181,7 +182,7 @@ export default async function DashboardHome() {
         />
         <StatCard
           label="Ad spend today"
-          value={adSpend ? formatBDT(adSpend._sum.spendTodayBdt ?? 0) : "—"}
+          value={adSpend ? formatUSD(adSpend._sum.spendTodayBdt ?? 0) : "—"}
           subtext={adSpendSubtext}
           icon={Megaphone}
           href={canViewAds ? "/ads" : undefined}

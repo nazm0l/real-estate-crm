@@ -189,7 +189,7 @@ export function RolesMatrix({ initialRoles }: { initialRoles: Role[] }) {
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="role-name">Name</Label>
+              <Label htmlFor="role-name" required>Name</Label>
               <Input id="role-name" value={newRoleName} onChange={(e) => setNewRoleName(e.target.value)} />
             </div>
             <div className="space-y-2">

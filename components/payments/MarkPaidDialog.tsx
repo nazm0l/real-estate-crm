@@ -81,7 +81,7 @@ export function MarkPaidDialog({
           </div>
 
           <div className="space-y-2">
-            <Label>Method</Label>
+            <Label required>Method</Label>
             <Select value={method} onValueChange={setMethod}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select method" />

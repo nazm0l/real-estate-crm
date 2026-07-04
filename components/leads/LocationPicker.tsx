@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { BD_AREAS } from "@/lib/dhaka-locations";
 
 function findLocationPath(value: string | null) {
@@ -41,64 +41,44 @@ export function LocationPicker({
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
       <div className="space-y-2">
         <Label>Region</Label>
-        <Select
+        <Combobox
           value={group}
-          onValueChange={(v) => {
+          onChange={(v) => {
             setGroup(v);
             setArea(null);
             setSubArea(null);
           }}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select region" />
-          </SelectTrigger>
-          <SelectContent>
-            {BD_AREAS.map((g) => (
-              <SelectItem key={g.label} value={g.label}>
-                {g.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          options={BD_AREAS.map((g) => ({ value: g.label, label: g.label }))}
+          placeholder="Select region"
+          searchPlaceholder="Search region…"
+        />
       </div>
 
       <div className="space-y-2">
         <Label>Area</Label>
-        <Select
+        <Combobox
           value={area}
-          onValueChange={(v) => {
+          onChange={(v) => {
             setArea(v);
             setSubArea(null);
           }}
+          options={areas.map((a) => ({ value: a.name, label: a.name }))}
+          placeholder="Select area"
+          searchPlaceholder="Search area…"
           disabled={!group}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select area" />
-          </SelectTrigger>
-          <SelectContent>
-            {areas.map((a) => (
-              <SelectItem key={a.name} value={a.name}>
-                {a.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        />
       </div>
 
       <div className="space-y-2">
         <Label>Sub-area</Label>
-        <Select value={subArea} onValueChange={setSubArea} disabled={!subAreas.length}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder={subAreas.length ? "Select sub-area" : "—"} />
-          </SelectTrigger>
-          <SelectContent>
-            {subAreas.map((s) => (
-              <SelectItem key={s} value={s}>
-                {s}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Combobox
+          value={subArea}
+          onChange={setSubArea}
+          options={subAreas.map((s) => ({ value: s, label: s }))}
+          placeholder={subAreas.length ? "Select sub-area" : "—"}
+          searchPlaceholder="Search sub-area…"
+          disabled={!subAreas.length}
+        />
       </div>
     </div>
   );

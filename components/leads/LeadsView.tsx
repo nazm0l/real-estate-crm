@@ -34,6 +34,7 @@ type FollowUpFilter = "all" | "overdue" | "today";
 export function LeadsView({
   initialLeads,
   agents,
+  properties,
   canCreate,
   canEditOwn,
   canEditAny,
@@ -42,6 +43,7 @@ export function LeadsView({
 }: {
   initialLeads: LeadWithAgent[];
   agents: { id: string; name: string }[];
+  properties: { id: string; title: string; locationArea: string }[];
   canCreate: boolean;
   canEditOwn: boolean;
   canEditAny: boolean;
@@ -223,6 +225,7 @@ export function LeadsView({
           open={formOpen}
           onOpenChange={setFormOpen}
           agents={agents}
+          properties={properties}
           canAssign={canAssign}
           currentUserId={currentUserId}
           onSaved={handleLeadCreated}

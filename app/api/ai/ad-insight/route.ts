@@ -5,7 +5,7 @@ import { requirePermission } from "@/lib/require-permission"
 import { PERMISSIONS } from "@/lib/permissions"
 import { SYSTEM_PROMPTS, type Language } from "@/lib/language"
 import { prisma } from "@/lib/db"
-import { formatBDT } from "@/lib/format-bdt"
+import { formatUSD } from "@/lib/format-usd"
 import { parseJsonBody } from "@/lib/parse-body";
 
 const schema = z.object({ language: z.enum(["en", "bn"]).default("en") })
@@ -49,17 +49,17 @@ export async function POST(req: Request) {
     .slice(0, 5)
     .map(
       (c) =>
-        `• ${c.name}: spend=${formatBDT(c.spendBdt)}, leads=${c.leadsCount}, clicks=${c.clicks}, impressions=${c.impressions}`
+        `• ${c.name}: spend=${formatUSD(c.spendBdt)}, leads=${c.leadsCount}, clicks=${c.clicks}, impressions=${c.impressions}`
     )
     .join("\n")
 
-  const prompt = `Analyze these Meta Ads campaigns for a Bangladesh real estate company and give a brief insight with budget suggestions.
+  const prompt = `Analyze these Meta Ads campaigns for a Bangladesh real estate company and give a brief insight with budget suggestions. Ad spend is in USD.
 
 Top campaigns:
 ${campaignLines}
 
-Totals: spend=${formatBDT(totalSpend)}, leads=${totalLeads}, clicks=${totalClicks}, impressions=${totalImpressions}
-CPL=${totalLeads > 0 ? formatBDT(totalSpend / totalLeads) : "N/A"}
+Totals: spend=${formatUSD(totalSpend)}, leads=${totalLeads}, clicks=${totalClicks}, impressions=${totalImpressions}
+CPL=${totalLeads > 0 ? formatUSD(totalSpend / totalLeads) : "N/A"}
 CTR=${totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) + "%" : "N/A"}
 
 Give 3-4 bullet points covering: performance summary, what's working, what to improve, budget suggestions. Keep it actionable and concise.`

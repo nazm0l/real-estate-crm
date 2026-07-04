@@ -134,7 +134,7 @@ export function PropertyForm({
 
         <div className="grid grid-cols-1 gap-x-4 gap-y-5 px-4 pb-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="property-title">Title</Label>
+            <Label htmlFor="property-title" required>Title</Label>
             <Input id="property-title" value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
 
@@ -164,7 +164,7 @@ export function PropertyForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="property-price">Price</Label>
+            <Label htmlFor="property-price" required>Price</Label>
             <Input
               id="property-price"
               placeholder="e.g. 1.2 crore"
@@ -206,7 +206,8 @@ export function PropertyForm({
             </div>
           </div>
 
-          <div className="sm:col-span-2">
+          <div className="space-y-2 sm:col-span-2">
+            <Label required>Location</Label>
             <LocationPicker value={locationArea} onChange={setLocationArea} />
           </div>
 
@@ -251,7 +252,7 @@ export function PropertyForm({
           <Button
             className="min-w-32"
             onClick={handleSubmit}
-            disabled={saving || !title.trim() || !priceText.trim()}
+            disabled={saving || !title.trim() || !priceText.trim() || !locationArea}
           >
             {saving ? "Saving…" : mode === "create" ? "Add property" : "Save changes"}
           </Button>

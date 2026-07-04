@@ -46,6 +46,8 @@ export function ScheduleGeneratorDialog({
   const booking = bookingText.trim() ? parseBDTInput(bookingText) : null;
   const down = downText.trim() ? parseBDTInput(downText) : 0;
   const n = Number(installmentsText);
+  const canGenerate =
+    total != null && total > 0 && booking != null && booking > 0 && Number.isInteger(n) && n >= 1 && n <= 60;
 
   function handlePropertySelect(id: string | null) {
     setPropertyId(id);
@@ -173,7 +175,7 @@ export function ScheduleGeneratorDialog({
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="gen-total">Total price</Label>
+                <Label htmlFor="gen-total" required>Total price</Label>
                 <Input
                   id="gen-total"
                   placeholder="e.g. 30 lakh"
@@ -183,7 +185,7 @@ export function ScheduleGeneratorDialog({
                 {total != null && <p className="text-xs text-muted-foreground">{formatBDT(total)}</p>}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="gen-booking">Booking money</Label>
+                <Label htmlFor="gen-booking" required>Booking money</Label>
                 <Input
                   id="gen-booking"
                   placeholder="e.g. 2 lakh"
@@ -205,7 +207,7 @@ export function ScheduleGeneratorDialog({
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="gen-installments">Monthly installments</Label>
+                <Label htmlFor="gen-installments" required>Monthly installments</Label>
                 <Input
                   id="gen-installments"
                   type="number"
@@ -308,7 +310,7 @@ export function ScheduleGeneratorDialog({
               <Button variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
-              <Button onClick={generateRows}>Generate schedule</Button>
+              <Button onClick={generateRows} disabled={!canGenerate}>Generate schedule</Button>
             </>
           )}
         </DialogFooter>

@@ -105,7 +105,7 @@ export function WorkspaceForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="companyName">Company name</Label>
+          <Label htmlFor="companyName" required>Company name</Label>
           <Input
             id="companyName"
             value={companyName}

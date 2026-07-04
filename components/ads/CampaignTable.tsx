@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { formatBDT } from "@/lib/format-bdt"
+import { formatUSD } from "@/lib/format-usd"
 
 export type CampaignRow = {
   campaignId: string
@@ -30,8 +30,8 @@ export function CampaignTable({ campaigns }: { campaigns: CampaignRow[] }) {
           <TableRow>
             <TableHead>Campaign</TableHead>
             <TableHead className="text-right">Result</TableHead>
-            <TableHead className="text-right">Cost per result</TableHead>
             <TableHead className="text-right">Amount spent</TableHead>
+            <TableHead className="text-right">Cost per result</TableHead>
             <TableHead className="text-right">Impressions</TableHead>
             <TableHead className="text-right">Ends</TableHead>
           </TableRow>
@@ -39,7 +39,7 @@ export function CampaignTable({ campaigns }: { campaigns: CampaignRow[] }) {
         <TableBody>
           {campaigns.map((c) => {
             const costPerResult =
-              c.resultCount > 0 ? formatBDT(c.spend / c.resultCount) : "—"
+              c.resultCount > 0 ? formatUSD(c.spend / c.resultCount) : "—"
             const ends = c.endDate
               ? new Date(c.endDate).toLocaleDateString("en-BD", {
                   day: "2-digit",
@@ -57,10 +57,10 @@ export function CampaignTable({ campaigns }: { campaigns: CampaignRow[] }) {
                   <div>{c.resultCount.toLocaleString("en-BD")}</div>
                   <div className="text-xs text-muted-foreground">{c.resultType}</div>
                 </TableCell>
-                <TableCell className="text-right tabular-nums">{costPerResult}</TableCell>
                 <TableCell className="text-right tabular-nums">
-                  {formatBDT(c.spend)}
+                  {formatUSD(c.spend)}
                 </TableCell>
+                <TableCell className="text-right tabular-nums">{costPerResult}</TableCell>
                 <TableCell className="text-right tabular-nums">
                   {c.impressions.toLocaleString("en-BD")}
                 </TableCell>

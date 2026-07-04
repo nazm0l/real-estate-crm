@@ -69,7 +69,7 @@ export function LogActivityDialog({
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="activity-description">
+            <Label htmlFor="activity-description" required>
               {type === "call" ? "What was discussed?" : "Note"}
             </Label>
             <Textarea

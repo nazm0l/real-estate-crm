@@ -32,6 +32,7 @@ const createLeadSchema = z.object({
   locationArea: z.string().optional(),
   nextFollowUpAt: z.string().datetime().optional(),
   agentId: z.string().optional(),
+  propertyId: z.string().optional(),
 });
 
 export async function POST(req: Request) {
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
-  const { email, agentId, ...rest } = parsed.data;
+  const { email, agentId, propertyId, ...rest } = parsed.data;
 
   const normalizedPhone = normalizeBDPhone(rest.phone);
   if (!normalizedPhone) {
@@ -70,6 +71,17 @@ export async function POST(req: Request) {
     resolvedAgentId = agentId;
   }
 
+  let interestedProperty: { id: string; title: string } | null = null;
+  if (propertyId) {
+    interestedProperty = await prisma.property.findFirst({
+      where: { id: propertyId, tenantId: session.user.tenantId },
+      select: { id: true, title: true },
+    });
+    if (!interestedProperty) {
+      return NextResponse.json({ error: "Selected property was not found" }, { status: 400 });
+    }
+  }
+
   const lead = await prisma.lead.create({
     data: {
       ...rest,
@@ -79,8 +91,22 @@ export async function POST(req: Request) {
       agentId: resolvedAgentId,
       nextFollowUpAt: rest.nextFollowUpAt ? new Date(rest.nextFollowUpAt) : undefined,
       activities: {
-        create: { createdById: session.user.id, type: "note", description: "Lead created" },
+        create: [
+          { createdById: session.user.id, type: "note", description: "Lead created" },
+          ...(interestedProperty
+            ? [
+                {
+                  createdById: session.user.id,
+                  type: "note",
+                  description: `Linked property: ${interestedProperty.title}`,
+                },
+              ]
+            : []),
+        ],
       },
+      ...(interestedProperty
+        ? { interestedIn: { create: [{ propertyId: interestedProperty.id }] } }
+        : {}),
     },
   });
 

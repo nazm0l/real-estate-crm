@@ -92,7 +92,7 @@ export function PaymentForm({
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="payment-amount">Amount</Label>
+              <Label htmlFor="payment-amount" required>Amount</Label>
               <Input
                 id="payment-amount"
                 placeholder="e.g. 50,000"

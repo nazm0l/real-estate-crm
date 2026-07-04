@@ -110,7 +110,7 @@ export function ScheduleVisitDialog({
         <div className="space-y-4">
           {!leadId && leads && (
             <div className="space-y-2">
-              <Label>Lead</Label>
+              <Label required>Lead</Label>
               <Select value={selectedLeadId} onValueChange={handleLeadPick}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select lead" />
@@ -129,7 +129,7 @@ export function ScheduleVisitDialog({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Date</Label>
+              <Label required>Date</Label>
               <Popover>
                 <PopoverTrigger
                   className={cn(buttonVariants({ variant: "outline" }), "w-full justify-start font-normal")}
@@ -150,7 +150,7 @@ export function ScheduleVisitDialog({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="visit-location">Location</Label>
+              <Label htmlFor="visit-location" required>Location</Label>
               <Input id="visit-location" value={location} onChange={(e) => setLocation(e.target.value)} />
             </div>
             <div className="space-y-2">
