@@ -1,18 +1,8 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
-import { fetchMetaCampaigns, type MetaCampaignData } from "@/lib/meta-api"
+import { fetchMetaCampaigns, resolveMetaCreds, type MetaCampaignData } from "@/lib/meta-api"
 import { getSession } from "@/lib/session"
 import { hasPermission, PERMISSIONS } from "@/lib/permissions"
-
-type TenantCreds = { id: string; metaAccessToken: string | null; metaAdAccountId: string | null }
-
-// Tenant creds win; global env creds are the fallback for deployments still on a single account
-function resolveCreds(tenant: TenantCreds): { token: string; account: string } | null {
-  const token = tenant.metaAccessToken || process.env.META_ACCESS_TOKEN || ""
-  const account = tenant.metaAdAccountId || process.env.META_AD_ACCOUNT_ID || ""
-  if (!token || !account) return null
-  return { token, account }
-}
 
 async function upsertCampaigns(tenantId: string, campaigns: MetaCampaignData[]) {
   for (const c of campaigns) {
@@ -56,7 +46,7 @@ async function handleSync(req: Request) {
     let synced = 0
     let tenantsSynced = 0
     for (const tenant of tenants) {
-      const creds = resolveCreds(tenant)
+      const creds = resolveMetaCreds(tenant)
       if (!creds) continue
       const campaigns = await fetchMetaCampaigns(creds.token, creds.account)
       if (campaigns.length === 0) continue
@@ -80,7 +70,7 @@ async function handleSync(req: Request) {
   })
   if (!tenant) return new Response("Not found", { status: 404 })
 
-  const creds = resolveCreds(tenant)
+  const creds = resolveMetaCreds(tenant)
   if (!creds) return NextResponse.json({ skipped: true })
 
   const campaigns = await fetchMetaCampaigns(creds.token, creds.account)

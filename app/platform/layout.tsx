@@ -20,7 +20,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
           <SignOutButton />
         </div>
       </header>
-      <main className="mx-auto max-w-6xl p-6">{children}</main>
+      <main className="mx-auto max-w-7xl p-6">{children}</main>
     </div>
   );
 }

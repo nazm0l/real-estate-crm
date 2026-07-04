@@ -1,6 +1,5 @@
 "use client"
 
-import { formatDistanceToNow } from "date-fns"
 import {
   Table,
   TableBody,
@@ -11,17 +10,17 @@ import {
 } from "@/components/ui/table"
 import { formatBDT } from "@/lib/format-bdt"
 
-type Campaign = {
-  id: string
+export type CampaignRow = {
+  campaignId: string
   name: string
-  spendBdt: number
+  endDate: string | null
+  spend: number
   impressions: number
-  clicks: number
-  leadsCount: number
-  syncedAt: Date
+  resultType: string
+  resultCount: number
 }
 
-export function CampaignTable({ campaigns }: { campaigns: Campaign[] }) {
+export function CampaignTable({ campaigns }: { campaigns: CampaignRow[] }) {
   if (campaigns.length === 0) return null
 
   return (
@@ -30,47 +29,43 @@ export function CampaignTable({ campaigns }: { campaigns: Campaign[] }) {
         <TableHeader>
           <TableRow>
             <TableHead>Campaign</TableHead>
-            <TableHead className="text-right">Spend</TableHead>
+            <TableHead className="text-right">Result</TableHead>
+            <TableHead className="text-right">Cost per result</TableHead>
+            <TableHead className="text-right">Amount spent</TableHead>
             <TableHead className="text-right">Impressions</TableHead>
-            <TableHead className="text-right">Clicks</TableHead>
-            <TableHead className="text-right">CTR</TableHead>
-            <TableHead className="text-right">CPL</TableHead>
-            <TableHead className="text-right">Leads</TableHead>
-            <TableHead className="text-right">Synced</TableHead>
+            <TableHead className="text-right">Ends</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {campaigns.map((c) => {
-            const ctr =
-              c.impressions > 0
-                ? ((c.clicks / c.impressions) * 100).toFixed(2) + "%"
-                : "—"
-            const cpl =
-              c.leadsCount > 0 ? formatBDT(c.spendBdt / c.leadsCount) : "—"
-            const synced = formatDistanceToNow(new Date(c.syncedAt), {
-              addSuffix: true,
-            })
+            const costPerResult =
+              c.resultCount > 0 ? formatBDT(c.spend / c.resultCount) : "—"
+            const ends = c.endDate
+              ? new Date(c.endDate).toLocaleDateString("en-BD", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "Ongoing"
+
             return (
-              <TableRow key={c.id}>
-                <TableCell className="font-medium max-w-[200px] truncate">
+              <TableRow key={c.campaignId}>
+                <TableCell className="font-medium max-w-[220px] truncate">
                   {c.name}
                 </TableCell>
                 <TableCell className="text-right tabular-nums">
-                  {formatBDT(c.spendBdt)}
+                  <div>{c.resultCount.toLocaleString("en-BD")}</div>
+                  <div className="text-xs text-muted-foreground">{c.resultType}</div>
+                </TableCell>
+                <TableCell className="text-right tabular-nums">{costPerResult}</TableCell>
+                <TableCell className="text-right tabular-nums">
+                  {formatBDT(c.spend)}
                 </TableCell>
                 <TableCell className="text-right tabular-nums">
                   {c.impressions.toLocaleString("en-BD")}
                 </TableCell>
-                <TableCell className="text-right tabular-nums">
-                  {c.clicks.toLocaleString("en-BD")}
-                </TableCell>
-                <TableCell className="text-right tabular-nums">{ctr}</TableCell>
-                <TableCell className="text-right tabular-nums">{cpl}</TableCell>
-                <TableCell className="text-right tabular-nums">
-                  {c.leadsCount}
-                </TableCell>
-                <TableCell className="text-right text-muted-foreground text-xs">
-                  {synced}
+                <TableCell className="text-right text-sm text-muted-foreground whitespace-nowrap">
+                  {ends}
                 </TableCell>
               </TableRow>
             )

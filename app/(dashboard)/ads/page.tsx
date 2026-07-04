@@ -3,8 +3,7 @@ import Link from "next/link"
 import { getSession } from "@/lib/session"
 import { prisma } from "@/lib/db"
 import { hasPermission, PERMISSIONS } from "@/lib/permissions"
-import { CampaignTable } from "@/components/ads/CampaignTable"
-import { SpendLeadsChart } from "@/components/ads/SpendLeadsChart"
+import { AdsInsightsView } from "@/components/ads/AdsInsightsView"
 import { SyncButton } from "@/components/ads/SyncButton"
 import { AdInsightCard } from "@/components/ai/AdInsightCard"
 import { Megaphone, RefreshCw } from "lucide-react"
@@ -95,8 +94,7 @@ export default async function AdsPage() {
       ) : (
         <>
           <AdInsightCard lang={lang} />
-          <SpendLeadsChart campaigns={campaigns} />
-          <CampaignTable campaigns={campaigns} />
+          <AdsInsightsView />
         </>
       )}
     </div>

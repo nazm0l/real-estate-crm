@@ -15,19 +15,19 @@ import {
 import { formatBDT } from "@/lib/format-bdt"
 
 type Campaign = {
-  id: string
+  campaignId: string
   name: string
-  spendBdt: number
-  leadsCount: number
+  spend: number
+  resultCount: number
 }
 
 const chartConfig: ChartConfig = {
-  spendBdt: {
+  spend: {
     label: "Spend",
     color: "hsl(var(--primary))",
   },
-  leadsCount: {
-    label: "Leads",
+  resultCount: {
+    label: "Results",
     color: "hsl(var(--info))",
   },
 }
@@ -41,14 +41,14 @@ export function SpendLeadsChart({ campaigns }: { campaigns: Campaign[] }) {
 
   const data = campaigns.map((c) => ({
     name: truncate(c.name),
-    spendBdt: Math.round(c.spendBdt),
-    leadsCount: c.leadsCount,
+    spend: Math.round(c.spend),
+    resultCount: c.resultCount,
   }))
 
   return (
     <div className="rounded-xl border border-border bg-card p-5">
       <p className="text-sm font-medium mb-4 text-foreground">
-        Spend vs Leads
+        Spend vs Results
       </p>
       <ChartContainer config={chartConfig} className="h-[260px] w-full">
         <BarChart data={data} margin={{ top: 4, right: 16, bottom: 4, left: 8 }}>
@@ -70,7 +70,7 @@ export function SpendLeadsChart({ campaigns }: { campaigns: Campaign[] }) {
             }
           />
           <YAxis
-            yAxisId="leads"
+            yAxisId="results"
             orientation="right"
             tickLine={false}
             axisLine={false}
@@ -80,19 +80,19 @@ export function SpendLeadsChart({ campaigns }: { campaigns: Campaign[] }) {
           <Tooltip
             content={({ active, payload, label }) => {
               if (!active || !payload?.length) return null
-              const spend = payload.find((p) => p.dataKey === "spendBdt")
-              const leads = payload.find((p) => p.dataKey === "leadsCount")
+              const spend = payload.find((p) => p.dataKey === "spend")
+              const results = payload.find((p) => p.dataKey === "resultCount")
               return (
                 <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-md text-sm">
                   <p className="font-medium mb-1">{label}</p>
                   {spend && (
-                    <p style={{ color: chartConfig.spendBdt.color }}>
+                    <p style={{ color: chartConfig.spend.color }}>
                       Spend: {formatBDT(Number(spend.value))}
                     </p>
                   )}
-                  {leads && (
-                    <p style={{ color: chartConfig.leadsCount.color }}>
-                      Leads: {leads.value}
+                  {results && (
+                    <p style={{ color: chartConfig.resultCount.color }}>
+                      Results: {results.value}
                     </p>
                   )}
                 </div>
@@ -101,14 +101,14 @@ export function SpendLeadsChart({ campaigns }: { campaigns: Campaign[] }) {
           />
           <Bar
             yAxisId="spend"
-            dataKey="spendBdt"
-            fill={chartConfig.spendBdt.color as string}
+            dataKey="spend"
+            fill={chartConfig.spend.color as string}
             radius={[4, 4, 0, 0]}
           />
           <Bar
-            yAxisId="leads"
-            dataKey="leadsCount"
-            fill={chartConfig.leadsCount.color as string}
+            yAxisId="results"
+            dataKey="resultCount"
+            fill={chartConfig.resultCount.color as string}
             radius={[4, 4, 0, 0]}
           />
         </BarChart>
