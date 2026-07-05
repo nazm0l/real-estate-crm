@@ -27,7 +27,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { NAV_ITEMS } from "@/components/layout/nav-items";
+import { NAV_ITEMS, isNavItemVisible } from "@/components/layout/nav-items";
+import type { Permission } from "@/lib/permissions";
 
 function initials(name: string) {
   return name
@@ -44,16 +45,19 @@ export function AppSidebar({
   userEmail,
   roleName,
   isPlatformAdmin,
+  permissions,
 }: {
   companyName: string;
   userName: string;
   userEmail: string;
   roleName: string;
   isPlatformAdmin: boolean;
+  permissions: Permission[];
 }) {
   const pathname = usePathname();
   const router = useRouter();
   const { isMobile } = useSidebar();
+  const visibleNavItems = NAV_ITEMS.filter((item) => isNavItemVisible(item, permissions));
 
   return (
     <Sidebar collapsible="icon">
@@ -77,7 +81,7 @@ export function AppSidebar({
         <SidebarGroup>
           <SidebarGroupLabel>Workspace</SidebarGroupLabel>
           <SidebarMenu>
-            {NAV_ITEMS.map((item) => {
+            {visibleNavItems.map((item) => {
               const isActive =
                 item.href === "/" ? pathname === "/" : pathname.startsWith(item.href.split("/").slice(0, 2).join("/"));
               return (

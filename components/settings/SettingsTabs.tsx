@@ -3,19 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { PERMISSIONS, type Permission } from "@/lib/permissions";
 
-const TABS = [
-  { href: "/settings/workspace", label: "Workspace" },
-  { href: "/settings/team", label: "Team" },
-  { href: "/settings/roles", label: "Roles" },
+const TABS: { href: string; label: string; permission: Permission }[] = [
+  { href: "/settings/workspace", label: "Workspace", permission: PERMISSIONS.ROLES_MANAGE },
+  { href: "/settings/team", label: "Team", permission: PERMISSIONS.TEAM_VIEW },
+  { href: "/settings/roles", label: "Roles", permission: PERMISSIONS.ROLES_VIEW },
 ];
 
-export function SettingsTabs() {
+export function SettingsTabs({ permissions }: { permissions: Permission[] }) {
   const pathname = usePathname();
+  const visibleTabs = TABS.filter((tab) => permissions.includes(tab.permission));
 
   return (
     <div className="flex gap-1 border-b border-border">
-      {TABS.map((tab) => {
+      {visibleTabs.map((tab) => {
         const active = pathname.startsWith(tab.href);
         return (
           <Link

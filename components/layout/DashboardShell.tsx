@@ -7,6 +7,7 @@ import { ChatSidebar } from "@/components/ai/ChatSidebar";
 import { ActingBanner } from "@/components/platform/ActingBanner";
 import type { Language } from "@/lib/language";
 import type { NotificationsPayload } from "@/lib/notifications";
+import type { Permission } from "@/lib/permissions";
 
 export function DashboardShell({
   companyName,
@@ -18,6 +19,7 @@ export function DashboardShell({
   notifications,
   isPlatformAdmin,
   actingAsTenant,
+  permissions,
   children,
 }: {
   companyName: string;
@@ -29,6 +31,7 @@ export function DashboardShell({
   notifications: NotificationsPayload;
   isPlatformAdmin: boolean;
   actingAsTenant: { id: string; companyName: string } | null;
+  permissions: Permission[];
   children: React.ReactNode;
 }) {
   return (
@@ -39,6 +42,7 @@ export function DashboardShell({
         userEmail={userEmail}
         roleName={roleName}
         isPlatformAdmin={isPlatformAdmin}
+        permissions={permissions}
       />
       <SidebarInset className="h-svh overflow-hidden">
         {actingAsTenant && <ActingBanner companyName={actingAsTenant.companyName} />}
@@ -48,6 +52,7 @@ export function DashboardShell({
           roleName={roleName}
           lang={lang}
           notifications={notifications}
+          permissions={permissions}
         />
         <main className="page-pattern min-h-0 flex-1 overflow-y-auto p-6">{children}</main>
       </SidebarInset>

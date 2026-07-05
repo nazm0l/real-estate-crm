@@ -23,6 +23,7 @@ import { NotificationsBell } from "@/components/layout/NotificationsBell";
 import { CommandPalette } from "@/components/layout/CommandPalette";
 import type { Language } from "@/lib/language";
 import type { NotificationsPayload } from "@/lib/notifications";
+import type { Permission } from "@/lib/permissions";
 
 export function TopBar({
   userName,
@@ -30,12 +31,14 @@ export function TopBar({
   roleName,
   lang,
   notifications,
+  permissions,
 }: {
   userName: string;
   userEmail: string;
   roleName: string;
   lang: Language;
   notifications: NotificationsPayload;
+  permissions: Permission[];
 }) {
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -83,7 +86,7 @@ export function TopBar({
           <Search className="h-4 w-4" />
         </Button>
       </div>
-      <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} />
+      <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} permissions={permissions} />
       <NotificationsBell notifications={notifications} />
       <LanguageToggle current={lang} />
       <ThemeControls />

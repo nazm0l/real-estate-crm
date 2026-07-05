@@ -17,7 +17,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { displayBDPhone } from "@/lib/bd-phone";
 import { STAGE_BADGE } from "@/components/leads/constants";
-import { NAV_ITEMS } from "@/components/layout/nav-items";
+import { NAV_ITEMS, isNavItemVisible } from "@/components/layout/nav-items";
+import type { Permission } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
 type SearchResults = {
@@ -30,9 +31,11 @@ const EMPTY: SearchResults = { leads: [], properties: [] };
 export function CommandPalette({
   open,
   onOpenChange,
+  permissions,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  permissions: Permission[];
 }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -72,9 +75,10 @@ export function CommandPalette({
     [onOpenChange, router]
   );
 
+  const allowedNavItems = NAV_ITEMS.filter((item) => isNavItemVisible(item, permissions));
   const navMatches = query.trim()
-    ? NAV_ITEMS.filter((n) => n.label.toLowerCase().includes(query.trim().toLowerCase()))
-    : NAV_ITEMS;
+    ? allowedNavItems.filter((n) => n.label.toLowerCase().includes(query.trim().toLowerCase()))
+    : allowedNavItems;
 
   const hasResults = results.leads.length > 0 || results.properties.length > 0 || navMatches.length > 0;
 
